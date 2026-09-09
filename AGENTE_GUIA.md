@@ -13,7 +13,7 @@
 - CP-1: [x] Completado
 - CP-2: [x] Completado
 - CP-3: [x] Completado (APK generado y probado)
-- MP-1: [ ] Pendiente (código de AdMob)
+- MP-1: [~] Estructura de AdMob creada; falta instalar SDK, consentimiento y prueba de integración
 - MP-2: [ ] Pendiente
 - MP-3: [ ] Pendiente (mejoras)
 - MP-4: [ ] Pendiente (misiones)
@@ -55,3 +55,12 @@
 - Documentar cualquier dato recopilado por AdMob y completar el formulario de seguridad de datos de Play Console.
 - Implementar y probar consentimiento GDPR para usuarios del EEE/Reino Unido antes de mostrar anuncios personalizados.
 - Usar IDs de prueba de AdMob hasta que la build de producción esté configurada y revisada.
+
+## Integración de AdMob
+
+- `Assets/Scripts/AdManager.cs` contiene Banner, Interstitial y Rewarded.
+- Los IDs reales de TapMon están documentados en el script; los IDs de prueba se seleccionan con `useTestAds`.
+- Mantener `useTestAds` en `true` durante desarrollo y pruebas; cambiarlo a `false` solo antes de una build de producción revisada.
+- Instalar el plugin oficial, definir `ADMOB_ENABLED` y configurar el App ID de Android en el SDK.
+- Probar consentimiento GDPR antes de inicializar anuncios personalizados.
+- El Rewarded entrega 500 monedas mediante `GameManager.OnRewardEarned()` solo después de `OnUserEarnedReward`.

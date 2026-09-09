@@ -35,6 +35,28 @@ Antes de publicar, sustituir los datos de contacto, confirmar la URL pública de
 - Mantener los anuncios recompensados como una acción voluntaria y entregar la recompensa solo después de una señal válida del SDK.
 - No incluir AdMob en el APK CP-3; activarlo solo después de configurar consentimiento, privacidad y los identificadores de producción.
 
+## Configuración de AdMob
+
+`Assets/Scripts/AdManager.cs` contiene la estructura para banner adaptable inferior, interstitial y anuncio recompensado. Los IDs reales de TapMon están separados de los IDs oficiales de prueba mediante `useTestAds`.
+
+### Instalación y configuración
+
+1. Instalar el plugin oficial Google Mobile Ads Unity en el proyecto.
+2. Definir `ADMOB_ENABLED` en `Project Settings > Player > Scripting Define Symbols` después de instalar el SDK.
+3. Crear un GameObject `AdManager` y asignarle `Assets/Scripts/AdManager.cs`.
+4. Mantener `useTestAds = true` durante desarrollo, pruebas internas y pruebas en dispositivos.
+5. Antes de publicar, configurar consentimiento y cambiar `useTestAds` a `false` en el componente `AdManager`.
+6. Configurar el App ID de Android en el SDK/manifest; el App ID de TapMon está documentado en el script.
+
+### IDs de TapMon
+
+- App ID: `ca-app-pub-9771091826001795~9872406537`
+- Banner: `ca-app-pub-9771091826001795/2154181115`
+- Interstitial: `ca-app-pub-9771091826001795/2971956266`
+- Rewarded: `ca-app-pub-9771091826001795/1609783455` (500 monedas)
+
+Los IDs reales no deben usarse en pruebas que generen impresiones o clics artificiales. Los IDs `ca-app-pub-3940256099942544/...` del script son los IDs oficiales de prueba de Google.
+
 ## Checklist de publicación en Google Play
 
 - [x] Repositorio GitHub configurado y tag `v0.1.0-cp3` creado.
