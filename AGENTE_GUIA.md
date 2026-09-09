@@ -86,6 +86,9 @@
 - No ejecutar la build con otra versión de Unity ni sustituir los IDs de prueba durante MP-2.
 - Si la build falla, revisar primero `build.log` y reportar el código de salida sin incluir carpetas generadas en Git.
 - Si aparece `uses-sdk:minSdkVersion 23 cannot be smaller than version 24`, configurar `Minimum API Level` en Android 7.0/API 24 y volver a ejecutar Force Resolve antes de compilar.
+- Para `Could not resolve all files for configuration ':launcher:releaseRuntimeClasspath'`, cerrar Unity y limpiar `Temp/`, `Library/`, `obj/` y `%USERPROFILE%\.gradle\caches\`; después abrir Unity y ejecutar Force Resolve.
+- Mantener `minSdkVersion 24` y `targetSdkVersion` automático (`**TARGETSDKVERSION**`) en los templates Android.
+- `settingsTemplate.gradle` ya contiene `pluginManagement`; `baseProjectTemplate.gradle` fija `com.android.tools.build:gradle:7.4.2`.
 - Si no existe `C:\Program Files\Unity\Hub\Editor\2022.3.67f2\Editor\Unity.exe` o el SDK de AdMob no está instalado, detenerse y reportarlo; no usar otra versión de Unity ni simular `Builds/TapMon_AdMob.apk`.
 
 ## MP-2: SDK y APK de prueba

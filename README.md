@@ -25,6 +25,22 @@ CP-3 está completado: el APK de prueba fue generado y probado manualmente en An
 
 Si Gradle muestra `Manifest merger failed: uses-sdk:minSdkVersion 23 cannot be smaller than version 24`, cambiar el mínimo a Android 7.0/API 24 y volver a ejecutar la resolución del Android Resolver antes de generar el APK.
 
+## Error de Gradle - Solución
+
+Si aparece `Could not resolve all files for configuration ':launcher:releaseRuntimeClasspath'` después de cambiar el mínimo de Android:
+
+1. Cerrar Unity y hacer una copia de seguridad del proyecto.
+2. Eliminar las cachés generadas del proyecto: `Temp/`, `Library/` y `obj/` si existe.
+3. Limpiar la caché global de Gradle en Windows: `%USERPROFILE%\.gradle\caches\` (en macOS/Linux: `~/.gradle/caches/`).
+4. Abrir el proyecto con Unity 2022.3.67f2 LTS y esperar a que regenere `Library/`.
+5. Revisar `Assets/Plugins/Android/mainTemplate.gradle`: `minSdkVersion` debe ser `24` y `targetSdkVersion` debe conservar el valor automático de Unity (`**TARGETSDKVERSION**`).
+6. Revisar `Assets/Plugins/Android/settingsTemplate.gradle`: debe conservar `pluginManagement` con `google()`, `mavenCentral()` y `gradlePluginPortal()`.
+7. El proyecto fija Android Gradle Plugin `7.4.2` en `Assets/Plugins/Android/baseProjectTemplate.gradle`.
+8. Ejecutar `Assets > External Dependency Manager > Android Resolver > Force Resolve`.
+9. Generar nuevamente el APK y revisar `build.log` si falla.
+
+La limpieza de cachés no debe versionarse. El agente puede preparar estos archivos, pero la apertura de Unity, `Force Resolve` y la build deben ejecutarse manualmente por el desarrollador.
+
 ## Documentación para Google Play
 
 - Política de privacidad: `Docs/PrivacyPolicy.md`.
