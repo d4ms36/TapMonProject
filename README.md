@@ -37,7 +37,9 @@ Antes de publicar, sustituir los datos de contacto, confirmar la URL pública de
 
 ## Configuración de AdMob
 
-`Assets/Scripts/AdManager.cs` contiene la estructura para banner adaptable inferior, interstitial y anuncio recompensado. Los IDs reales de TapMon están separados de los IDs oficiales de prueba mediante `useTestAds`.
+`Assets/Scripts/AdManager.cs` usa la API moderna de Google Mobile Ads 9.x para banner adaptable inferior, interstitial y anuncio recompensado. Los IDs reales de TapMon están separados de los IDs oficiales de prueba mediante `useTestAds`.
+
+La carga de interstitial y rewarded usa `InterstitialAd.Load(...)` y `RewardedAd.Load(...)`; no deben reintroducirse constructores `new InterstitialAd(...)`, `LoadAd()` sobre esos formatos ni `OnAdRewarded`, porque pertenecen a APIs antiguas.
 
 ### Instalación y configuración
 

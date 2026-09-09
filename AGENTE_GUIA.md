@@ -59,6 +59,8 @@
 ## Integración de AdMob
 
 - `Assets/Scripts/AdManager.cs` contiene Banner, Interstitial y Rewarded.
+- `AdManager.cs` está adaptado a la API moderna 9.x: usar `InterstitialAd.Load`, `RewardedAd.Load`, `CanShowAd` y `Show(Action<Reward>)`.
+- No volver a usar `new InterstitialAd`, `new RewardedAd`, `IsLoaded`, `OnAdRewarded` ni `LoadAd` para interstitial/rewarded.
 - Los IDs reales de TapMon están documentados en el script; los IDs de prueba se seleccionan con `useTestAds`.
 - Mantener `useTestAds` en `true` durante desarrollo y pruebas; cambiarlo a `false` solo antes de una build de producción revisada.
 - Instalar el plugin oficial, definir `ADMOB_ENABLED` y configurar el App ID de Android en el SDK.

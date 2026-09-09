@@ -1,191 +1,170 @@
 using System;
+using GoogleMobileAds.Api;
 using UnityEngine;
 
-#if ADMOB_ENABLED
-using GoogleMobileAds.Api;
-#endif
-
 /// <summary>
-/// Gestiona Banner, Interstitial y anuncios recompensados de Google AdMob.
-/// El SDK se compila solo cuando se define ADMOB_ENABLED.
+/// Gestiona los formatos de Google Mobile Ads con la API 9.x.
+/// Mantener useTestAds activado hasta terminar las pruebas en dispositivo.
 /// </summary>
 public class AdManager : MonoBehaviour
 {
-    public static AdManager Instance { get; private set; }
+    private const string ProductionAppId = "ca-app-pub-9771091826001795~9872406537";
+    private const string ProductionBannerId = "ca-app-pub-9771091826001795/2154181115";
+    private const string ProductionInterstitialId = "ca-app-pub-9771091826001795/2971956266";
+    private const string ProductionRewardedId = "ca-app-pub-9771091826001795/1609783455";
 
-    [Header("Configuracion")]
-    [Tooltip("Mantener activado durante desarrollo. Desactivar solo para produccion.")]
-    [SerializeField] private bool useTestAds = true;
-
-    [Tooltip("Recompensa entregada al completar un anuncio recompensado.")]
-    [SerializeField] private int rewardedCoins = 500;
-
-    [Header("IDs de aplicacion")]
-    [SerializeField] private string androidAppId = "TODO_REEMPLAZAR_APP_ID: ca-app-pub-9771091826001795~9872406537";
-
-    [Header("IDs reales de TapMon")]
-    [SerializeField] private string productionBannerId = "TODO_REEMPLAZAR_BANNER_ID: ca-app-pub-9771091826001795/2154181115";
-    [SerializeField] private string productionInterstitialId = "TODO_REEMPLAZAR_INTERSTITIAL_ID: ca-app-pub-9771091826001795/2971956266";
-    [SerializeField] private string productionRewardedId = "TODO_REEMPLAZAR_REWARDED_ID: ca-app-pub-9771091826001795/1609783455";
-
-#if ADMOB_ENABLED
+    private const string TestAppId = "ca-app-pub-3940256099942544~3347511713";
     private const string TestBannerId = "ca-app-pub-3940256099942544/6300978111";
     private const string TestInterstitialId = "ca-app-pub-3940256099942544/1033173712";
     private const string TestRewardedId = "ca-app-pub-3940256099942544/5224354917";
 
+    private static AdManager instance;
+    public static AdManager Instance { get { return instance; } }
+
+    [SerializeField] private bool useTestAds = true;
+    [SerializeField] private int rewardedCoins = 500;
+
     private BannerView bannerView;
     private InterstitialAd interstitialAd;
     private RewardedAd rewardedAd;
-#endif
-
     private bool rewardDelivered;
 
-#if ADMOB_ENABLED
-    private string BannerId => useTestAds ? TestBannerId : productionBannerId;
-    private string InterstitialId => useTestAds ? TestInterstitialId : productionInterstitialId;
-    private string RewardedId => useTestAds ? TestRewardedId : productionRewardedId;
-#endif
+    private string BannerAdUnitId => useTestAds ? TestBannerId : ProductionBannerId;
+    private string InterstitialAdUnitId => useTestAds ? TestInterstitialId : ProductionInterstitialId;
+    private string RewardedAdUnitId => useTestAds ? TestRewardedId : ProductionRewardedId;
 
     private void Awake()
     {
-        if (Instance != null && Instance != this)
+        if (instance != null && instance != this)
         {
             Destroy(gameObject);
             return;
         }
 
-        Instance = this;
+        instance = this;
         DontDestroyOnLoad(gameObject);
     }
 
     private void Start()
     {
-#if ADMOB_ENABLED
+        string appIdToUse = useTestAds ? TestAppId : ProductionAppId;
         MobileAds.Initialize(_ =>
         {
-            Debug.Log("[AdManager] SDK de AdMob inicializado.");
+            Debug.Log($"[AdManager] SDK inicializado con App ID {appIdToUse}.");
             LoadBanner();
             LoadInterstitial();
             LoadRewardedAd();
         });
-#else
-        Debug.Log("[AdManager] AdMob desactivado. Define ADMOB_ENABLED despues de instalar el SDK.");
-#endif
     }
 
-    /// <summary>Carga un banner adaptable anclado en la parte inferior.</summary>
     public void LoadBanner()
     {
-#if ADMOB_ENABLED && UNITY_ANDROID
         DestroyBanner();
         AdSize adaptiveSize = AdSize.GetCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(AdSize.FullWidth);
-        bannerView = new BannerView(BannerId, adaptiveSize, AdPosition.Bottom);
-        bannerView.OnAdLoaded += () => Debug.Log("[AdManager] Banner cargado.");
-        bannerView.OnAdFailedToLoad += error => Debug.LogWarning($"[AdManager] Error en banner: {error.LoadAdError.GetMessage()}");
-        bannerView.LoadAd(new AdRequest.Builder().Build());
-#endif
+        bannerView = new BannerView(BannerAdUnitId, adaptiveSize, AdPosition.Bottom);
+        bannerView.OnBannerAdLoaded += () => Debug.Log("[AdManager] Banner cargado.");
+        bannerView.OnBannerAdLoadFailed += error => Debug.LogWarning($"[AdManager] Error banner: {error.GetMessage()}");
+        bannerView.LoadAd(new AdRequest());
     }
 
-    /// <summary>Carga un interstitial para mostrarlo entre escenas o misiones.</summary>
     public void LoadInterstitial()
     {
-#if ADMOB_ENABLED && UNITY_ANDROID
-        interstitialAd = new InterstitialAd(InterstitialId);
-        interstitialAd.OnAdLoaded += () => Debug.Log("[AdManager] Interstitial cargado.");
-        interstitialAd.OnAdFailedToLoad += error => Debug.LogWarning($"[AdManager] Error en interstitial: {error.LoadAdError.GetMessage()}");
-        interstitialAd.OnAdClosed += () =>
+        interstitialAd?.Destroy();
+        interstitialAd = null;
+        InterstitialAd.Load(InterstitialAdUnitId, new AdRequest(), (ad, error) =>
         {
-            interstitialAd.Destroy();
-            LoadInterstitial();
-        };
-        interstitialAd.LoadAd(new AdRequest.Builder().Build());
-#endif
+            if (error != null || ad == null)
+            {
+                Debug.LogWarning($"[AdManager] Error interstitial: {error?.GetMessage()}");
+                return;
+            }
+
+            interstitialAd = ad;
+            interstitialAd.OnAdFullScreenContentClosed += LoadInterstitial;
+            interstitialAd.OnAdFullScreenContentFailed += loadError => Debug.LogWarning($"[AdManager] Error mostrando interstitial: {loadError.GetMessage()}");
+            Debug.Log("[AdManager] Interstitial cargado.");
+        });
     }
 
-    /// <summary>Muestra el interstitial si esta cargado; si no, solicita otro.</summary>
     public void ShowInterstitial()
     {
-#if ADMOB_ENABLED && UNITY_ANDROID
-        if (interstitialAd != null && interstitialAd.IsLoaded())
+        if (interstitialAd != null && interstitialAd.CanShowAd())
         {
             interstitialAd.Show();
             return;
         }
 
+        Debug.Log("[AdManager] Interstitial no disponible; solicitando otro.");
         LoadInterstitial();
-#else
-        Debug.Log("[AdManager] Interstitial omitido porque AdMob esta desactivado.");
-#endif
     }
 
-    /// <summary>Carga el anuncio recompensado y prepara una recompensa de 500 monedas.</summary>
     public void LoadRewardedAd()
     {
-#if ADMOB_ENABLED && UNITY_ANDROID
-        rewardedAd = new RewardedAd(RewardedId);
-        rewardedAd.OnAdLoaded += () => Debug.Log("[AdManager] Rewarded cargado.");
-        rewardedAd.OnAdFailedToLoad += error => Debug.LogWarning($"[AdManager] Error en rewarded: {error.LoadAdError.GetMessage()}");
-        rewardedAd.OnAdClosed += () =>
+        rewardedAd?.Destroy();
+        rewardedAd = null;
+        RewardedAd.Load(RewardedAdUnitId, new AdRequest(), (ad, error) =>
         {
-            rewardedAd.Destroy();
+            if (error != null || ad == null)
+            {
+                Debug.LogWarning($"[AdManager] Error rewarded: {error?.GetMessage()}");
+                return;
+            }
+
+            rewardedAd = ad;
+            rewardedAd.OnAdFullScreenContentClosed += LoadRewardedAd;
+            rewardedAd.OnAdFullScreenContentFailed += loadError => Debug.LogWarning($"[AdManager] Error mostrando rewarded: {loadError.GetMessage()}");
+            Debug.Log("[AdManager] Rewarded cargado.");
+        });
+    }
+
+    public void ShowRewardedAd()
+    {
+        ShowRewardedAd(null);
+    }
+
+    public void ShowRewardedAd(Action<bool> onShown)
+    {
+        if (rewardedAd == null || !rewardedAd.CanShowAd())
+        {
+            Debug.Log("[AdManager] Rewarded no disponible; solicitando otro.");
             LoadRewardedAd();
-        };
-        rewardedAd.OnUserEarnedReward += (_, args) =>
+            onShown?.Invoke(false);
+            return;
+        }
+
+        rewardDelivered = false;
+        rewardedAd.Show(reward =>
         {
             if (rewardDelivered) return;
 
             rewardDelivered = true;
-            Debug.Log($"[AdManager] Recompensa recibida: {args.GetReward()}. Entregando {rewardedCoins} monedas.");
+            Debug.Log($"[AdManager] Recompensa recibida: {reward.Amount} {reward.Type}.");
             if (GameManager.Instance != null)
             {
                 GameManager.Instance.OnRewardEarned();
             }
-        };
-        rewardedAd.LoadAd(new AdRequest.Builder().Build());
-#endif
+            else
+            {
+                Debug.LogWarning($"[AdManager] GameManager no disponible para entregar {rewardedCoins} monedas.");
+            }
+        });
+        onShown?.Invoke(true);
     }
 
-    /// <summary>
-    /// Muestra un rewarded y notifica si pudo abrirse. La moneda se entrega
-    /// desde OnUserEarnedReward, nunca solo por pulsar el boton.
-    /// </summary>
-    public void ShowRewardedAd(Action<bool> onShown)
-    {
-#if ADMOB_ENABLED && UNITY_ANDROID
-        if (rewardedAd != null && rewardedAd.IsLoaded())
-        {
-            rewardDelivered = false;
-            rewardedAd.Show();
-            onShown?.Invoke(true);
-            return;
-        }
-
-        LoadRewardedAd();
-        onShown?.Invoke(false);
-#else
-        Debug.LogWarning("[AdManager] AdMob desactivado. Instala el SDK y define ADMOB_ENABLED.");
-        onShown?.Invoke(false);
-#endif
-    }
-
-#if ADMOB_ENABLED
     private void DestroyBanner()
     {
         if (bannerView == null) return;
         bannerView.Destroy();
         bannerView = null;
     }
-#endif
 
     private void OnDestroy()
     {
-        if (Instance != this) return;
+        if (instance != this) return;
 
-#if ADMOB_ENABLED
         DestroyBanner();
         interstitialAd?.Destroy();
         rewardedAd?.Destroy();
-#endif
-        Instance = null;
+        instance = null;
     }
 }
