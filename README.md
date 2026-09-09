@@ -92,6 +92,30 @@ Instalar el APK en un dispositivo Android con conexión a Internet y comprobar:
 
 El procedimiento detallado y el espacio para evidencias están en `Docs/MP2_CHECKLIST.md`.
 
+## Generación automática de APK
+
+`Assets/Editor/BuildScript.cs` permite generar el APK desde una terminal sin abrir Unity manualmente. Requiere Unity `2022.3.67f2`, Android Build Support, el SDK oficial de Google Mobile Ads y `useTestAds = true`. En este entorno el APK queda pendiente porque esa versión exacta de Unity y el SDK de AdMob aún no están instalados.
+
+Desde la raíz del proyecto, ejecutar PowerShell con la ruta de Unity instalada:
+
+```powershell
+& "C:\Program Files\Unity\Hub\Editor\2022.3.67f2\Editor\Unity.exe" `
+   -batchmode -quit -nographics `
+   -projectPath (Get-Location) `
+   -executeMethod BuildScript.BuildAndroidAdMob `
+   -logFile (Join-Path (Get-Location) "build.log")
+```
+
+El script activa Android, registra `MainMenu.unity`, asegura `ADMOB_ENABLED` y genera `Builds/TapMon_AdMob.apk`. Tras la ejecución:
+
+```powershell
+$apk = Get-Item "Builds/TapMon_AdMob.apk"
+Write-Host "APK: $($apk.FullName)"
+Write-Host "Tamaño: $($apk.Length) bytes"
+```
+
+Revisar `build.log` si Unity devuelve un código distinto de cero. No usar `2022.3.62f3` u otra versión para este hito: la build debe ejecutarse con `2022.3.67f2`.
+
 ## Checklist de publicación en Google Play
 
 - [x] Repositorio GitHub configurado y tag `v0.1.0-cp3` creado.

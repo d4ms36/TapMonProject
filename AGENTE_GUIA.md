@@ -65,6 +65,17 @@
 - Probar consentimiento GDPR antes de inicializar anuncios personalizados.
 - El Rewarded entrega 500 monedas mediante `GameManager.OnRewardEarned()` solo después de `OnUserEarnedReward`.
 
+## Generación de APK desde terminal
+
+- No abrir Unity manualmente ni generar APK desde el agente sin una instrucción explícita del PM.
+- La build automatizada usa `Assets/Editor/BuildScript.cs` y el método `BuildScript.BuildAndroidAdMob`.
+- Ejecutar Unity `2022.3.67f2` con `-batchmode -quit -nographics` y guardar la salida en `build.log`.
+- El resultado esperado es `Builds/TapMon_AdMob.apk`; verificar que existe y registrar su tamaño.
+- Confirmar que `useTestAds = true` y que el SDK de AdMob está instalado antes de compilar.
+- No ejecutar la build con otra versión de Unity ni sustituir los IDs de prueba durante MP-2.
+- Si la build falla, revisar primero `build.log` y reportar el código de salida sin incluir carpetas generadas en Git.
+- Si no existe `C:\Program Files\Unity\Hub\Editor\2022.3.67f2\Editor\Unity.exe` o el SDK de AdMob no está instalado, detenerse y reportarlo; no usar otra versión de Unity ni simular `Builds/TapMon_AdMob.apk`.
+
 ## MP-2: SDK y APK de prueba
 
 - Consultar `README.md` y `Docs/MP2_CHECKLIST.md` antes de cambiar la configuración del SDK.
