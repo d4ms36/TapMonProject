@@ -90,6 +90,9 @@
 - Mantener `minSdkVersion 24` y `targetSdkVersion` automático (`**TARGETSDKVERSION**`) en los templates Android.
 - `settingsTemplate.gradle` ya contiene `pluginManagement`; `baseProjectTemplate.gradle` fija `com.android.tools.build:gradle:7.4.2`.
 - Si no existe `C:\Program Files\Unity\Hub\Editor\2022.3.67f2\Editor\Unity.exe` o el SDK de AdMob no está instalado, detenerse y reportarlo; no usar otra versión de Unity ni simular `Builds/TapMon_AdMob.apk`.
+- Si Gradle no puede resolver AGP por `dl.google.com` o `repo.maven.apache.org`, no forzar otra versión en `mainTemplate.gradle`: el `baseProjectTemplate.gradle` que fijaba 7.4.2 fue eliminado.
+- Comprobar conectividad/proxy/DNS, SDK/NDK/OpenJDK y ejecutar `Assets > External Dependency Manager > Android Resolver > Force Resolve` desde Unity.
+- En entornos sin red, usar un mirror Maven o una caché Gradle previamente poblada; no marcar la build como válida hasta resolver la dependencia real.
 
 ## MP-2: SDK y APK de prueba
 

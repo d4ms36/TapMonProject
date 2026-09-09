@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+// La version de AGP la gestiona Unity; no forzar classpath aqui.
 **APPLY_PLUGINS**
 
 dependencies {

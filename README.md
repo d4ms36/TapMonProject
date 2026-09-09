@@ -41,6 +41,20 @@ Si aparece `Could not resolve all files for configuration ':launcher:releaseRunt
 
 La limpieza de cachés no debe versionarse. El agente puede preparar estos archivos, pero la apertura de Unity, `Force Resolve` y la build deben ejecutarse manualmente por el desarrollador.
 
+## Error de Gradle - Host desconocido
+
+Si aparece `Could not resolve com.android.tools.build:gradle:7.4.2` junto con errores de conexión a `dl.google.com` o `repo.maven.apache.org`, el problema es de resolución de repositorios o conectividad, no de `minSdkVersion`.
+
+La dependencia AGP `7.4.2` forzada por `baseProjectTemplate.gradle` fue eliminada. `mainTemplate.gradle` no debe contener ningún `classpath` de AGP: Unity debe seleccionar la versión compatible con el editor y el proyecto. No sustituirla arbitrariamente por `7.4.1` si esa versión tampoco está disponible localmente.
+
+Pasos manuales:
+
+1. Comprobar conexión, proxy, VPN, firewall y DNS para `dl.google.com` y `repo.maven.apache.org`.
+2. Abrir Unity 2022.3.67f2 LTS y verificar que Android Build Support, SDK/NDK y OpenJDK están instalados.
+3. Ejecutar `Assets > External Dependency Manager > Android Resolver > Force Resolve`.
+4. Reintentar la build con `minSdkVersion 24` y sin templates que fuercen AGP.
+5. Si el entorno es offline, configurar un mirror Maven interno o instalar previamente las dependencias en la caché Gradle; no inventar una versión de AGP.
+
 ## Documentación para Google Play
 
 - Política de privacidad: `Docs/PrivacyPolicy.md`.
