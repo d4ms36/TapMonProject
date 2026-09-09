@@ -7,6 +7,7 @@
 ## Estado actual
 
 - **Unity:** 2022.3.67f2 LTS.
+- **Package name Android:** `com.tuempresa.tapmon`.
 - **Escena principal:** `Assets/Scenes/MainMenu.unity`.
 - **Scripts principales:** `Assets/Scripts/GameManager.cs` y `Assets/Scripts/UpgradeSO.cs`.
 - **UI:** `Canvas` con `CoinDisplay` (TextMeshPro) y `TapButton`.

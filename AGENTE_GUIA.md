@@ -5,6 +5,7 @@
 - **Nombre:** TapMon: Mi Compi Virtual
 - **Motor:** Unity 2022.3.67f2 LTS
 - **Plataforma:** Android
+- **Package name Android:** `com.tuempresa.tapmon`
 - **minSdkVersion requerido:** 24 (Android 7.0 Nougat)
 - **Monetización:** AdMob (Banner + anuncios recompensados)
 - **Almacenamiento:** PlayerPrefs local, sin servidores
