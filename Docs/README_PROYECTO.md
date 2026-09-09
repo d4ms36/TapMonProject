@@ -6,9 +6,9 @@ TapMon: Mi Compi Virtual es un juego clicker para Android. La mecánica base ent
 
 ## Estado
 
-CP-1 y CP-2 están completados. La escena principal es `Assets/Scenes/MainMenu.unity` y contiene un `GameManager`, un contador `CoinDisplay` basado en TextMeshPro y el botón `TapButton` conectado a `GameManager.AddCoins(1)`.
+CP-1, CP-2 y CP-3 están completados. La escena principal es `Assets/Scenes/MainMenu.unity` y contiene un `GameManager`, un contador `CoinDisplay` basado en TextMeshPro y el botón `TapButton` conectado a `GameManager.AddCoins(1)`. El APK de prueba fue generado y probado manualmente en Android.
 
-El siguiente hito es CP-3: generar y probar manualmente un APK de Android sin anuncios. El proyecto se trabaja con Unity 2022.3.67f2 LTS.
+El siguiente hito es CP-4: preparar la publicación y la documentación de Google Play. El proyecto se trabaja con Unity 2022.3.67f2 LTS.
 
 ## Arquitectura actual
 

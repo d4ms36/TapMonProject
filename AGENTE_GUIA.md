@@ -12,7 +12,7 @@
 
 - CP-1: [x] Completado
 - CP-2: [x] Completado
-- CP-3: [ ] Pendiente (manual del desarrollador)
+- CP-3: [x] Completado (APK generado y probado)
 - MP-1: [ ] Pendiente (código de AdMob)
 - MP-2: [ ] Pendiente
 - MP-3: [ ] Pendiente (mejoras)
@@ -47,3 +47,11 @@
 4. Actualizar `README.md` y la documentación relacionada.
 5. Ejecutar una validación estática sin abrir Unity.
 6. Reportar al PM los archivos modificados, la validación y los pendientes manuales.
+
+## Políticas y publicación
+
+- Mantener `Docs/PrivacyPolicy.md` y `Docs/TermsOfService.md` sincronizados con las funciones reales de la app.
+- No dejar placeholders de contacto o empresa antes de publicar en Google Play.
+- Documentar cualquier dato recopilado por AdMob y completar el formulario de seguridad de datos de Play Console.
+- Implementar y probar consentimiento GDPR para usuarios del EEE/Reino Unido antes de mostrar anuncios personalizados.
+- Usar IDs de prueba de AdMob hasta que la build de producción esté configurada y revisada.

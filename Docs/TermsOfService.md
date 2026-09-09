@@ -15,11 +15,14 @@ Todo el contenido de la aplicación (código, gráficos, sonidos) es propiedad d
 ## 4. Limitación de responsabilidad
 La aplicación se proporciona "tal cual". No nos hacemos responsables de daños derivados de su uso.
 
-## 5. Anuncios
-La aplicación muestra anuncios de Google AdMob. Al usar la app, aceptas la política de privacidad de Google.
+## 5. Anuncios y compras
+Las versiones que integren publicidad podrán mostrar anuncios de Google AdMob, incluidos banners y anuncios recompensados. Los anuncios recompensados son voluntarios. La aplicación no incluye compras integradas en la versión CP-3.
 
 ## 6. Cambios en los términos
 Podemos actualizar estos términos en cualquier momento. El uso continuado implica la aceptación de los cambios.
 
-## 7. Contacto
+## 7. Privacidad y contacto
+El tratamiento de datos se describe en `Docs/PrivacyPolicy.md`. Para consultas: [TU_EMAIL_AQUI]
+
+## 8. Contacto
 Para consultas: [TU_EMAIL_AQUI]

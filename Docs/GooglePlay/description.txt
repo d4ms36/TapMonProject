@@ -1,0 +1,16 @@
+TapMon: Mi Compi Virtual
+
+Toca, consigue monedas y acompaña a tu compi virtual en su evolución.
+
+TapMon es un juego clicker sencillo para Android. Pulsa el botón principal para ganar monedas, observa cómo aumenta tu progreso y prepárate para desbloquear mejoras, automatizaciones y nuevas formas de cuidar a tu mascota.
+
+Características:
+- Mecánica de toque rápida y fácil de entender.
+- Contador de monedas con progreso local.
+- Sistema de mejoras en desarrollo.
+- Experiencia pensada para sesiones cortas y relajadas.
+- Sin servidores: el progreso se guarda localmente en el dispositivo.
+
+La versión inicial de prueba no incluye anuncios. Las funciones futuras de monetización se incorporarán respetando las políticas de Google Play y el consentimiento de privacidad aplicable.
+
+Texto provisional para Play Console. Revisar límites de caracteres, contacto, clasificación y características finales antes de publicar.

@@ -13,9 +13,44 @@
 - **Interacción:** `TapButton` ejecuta `GameManager.AddCoins(1)` y `GameManager.coinDisplay` apunta a `CoinDisplay`.
 - **Errores conocidos:** Ninguno; la escena está configurada para compilar sin errores.
 
-## Próximo paso: CP-3
+## Estado CP-3
 
-Generar manualmente un APK de prueba para Android sin anuncios.
+CP-3 está completado: el APK de prueba fue generado y probado manualmente en Android.
+
+## Documentación para Google Play
+
+- Política de privacidad: `Docs/PrivacyPolicy.md`.
+- Términos y condiciones: `Docs/TermsOfService.md`.
+- Material de ficha: `Docs/GooglePlay/description.txt` e `icon.png`.
+- Capturas pendientes de incorporar: `Docs/GooglePlay/screenshots/`.
+
+Antes de publicar, sustituir los datos de contacto, confirmar la URL pública de las políticas y revisar la declaración de datos de Google Play.
+
+## Buenas prácticas de AdMob
+
+- Usar únicamente IDs de prueba durante desarrollo y pruebas internas.
+- No hacer clic en anuncios propios ni incentivar clics artificiales.
+- Mostrar anuncios respetando las políticas de AdMob y Google Play.
+- Solicitar consentimiento para anuncios personalizados cuando corresponda, especialmente para usuarios del EEE/Reino Unido, antes de inicializar la publicidad personalizada.
+- Mantener los anuncios recompensados como una acción voluntaria y entregar la recompensa solo después de una señal válida del SDK.
+- No incluir AdMob en el APK CP-3; activarlo solo después de configurar consentimiento, privacidad y los identificadores de producción.
+
+## Checklist de publicación en Google Play
+
+- [x] Repositorio GitHub configurado y tag `v0.1.0-cp3` creado.
+- [x] APK CP-3 generado y probado.
+- [ ] Política de privacidad publicada en una URL accesible.
+- [ ] Términos y condiciones revisados y publicados.
+- [ ] Formulario de seguridad de datos completado.
+- [ ] Consentimiento GDPR implementado y probado donde corresponda.
+- [ ] Icono final de 512x512 preparado.
+- [ ] Capturas de pantalla finales incorporadas.
+- [ ] Descripción, categoría, clasificación de contenido y datos de contacto completados.
+- [ ] Build de producción firmada y subida a Play Console.
+
+## Procedimiento CP-3 archivado
+
+El procedimiento manual usado para generar y probar el APK se conserva debajo como referencia.
 
 1. Abrir el proyecto con Unity 2022.3.67f2 LTS y cambiar la plataforma a Android.
 2. Añadir `Assets/Scenes/MainMenu.unity` a Build Settings.
@@ -23,7 +58,7 @@ Generar manualmente un APK de prueba para Android sin anuncios.
 4. Generar `Builds/TapMon_Test.apk`.
 5. Instalarlo en un dispositivo Android y probar el contador, la persistencia y el arranque.
 
-### Checklist CP-3
+### Checklist CP-3 archivado
 
 - [ ] Android seleccionado como plataforma.
 - [ ] `MainMenu.unity` incluida en la compilación.
