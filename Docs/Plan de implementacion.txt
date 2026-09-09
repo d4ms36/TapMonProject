@@ -1,0 +1,23 @@
+📋 PLAN DE EJECUCIÓN - TAPMON
+🎯 CORTO PLAZO (CP)
+
+ID	Objetivo	Acción
+CP-1	Proyecto Unity listo	Crear proyecto 2D Mobile → Copiar scripts → Verificar sin errores
+CP-2	Escena jugable	Canvas + contador + botón toque → Vincular GameManager
+CP-3	APK instalable	Configurar Android → Build APK → Instalar en celular → Probar toque
+CP-4	GitHub	Crear repo → Subir proyecto → Documentar CP-1 a CP-3
+
+🎯 MEDIANO PLAZO (MP)
+ID	Objetivo	Acción
+MP-1	AdMob integrado	Agente: AdManager.cs + GameManager actualizado → Tú: Instalar SDK
+MP-2	APK con anuncios	Build APK → Instalar → Probar banner + recompensados
+MP-3	Sistema mejoras	Agente: 3 UpgradeSO + lógica compra → Tú: Crear assets + UI tienda
+MP-4	Misiones diarias	Agente: DailyMission + lógica → Tú: UI misiones → Probar reinicio
+
+🎯 LARGO PLAZO (LP)
+
+ID	Objetivo	Acción
+LP-1	Pulir juego	UI bonita + animaciones + optimizar + corregir bugs
+LP-2	Documentación legal	PrivacyPolicy.md + TermsOfService.md → GitHub Pages → URL en Unity
+LP-3	Build final	Crear keystore → Build firmado → Probar en celular
+LP-4	Publicar	Assets (icono, capturas) → Subir a Google Play → Enviar revisión

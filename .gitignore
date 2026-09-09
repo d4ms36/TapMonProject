@@ -1,0 +1,32 @@
+# Unity generated folders
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uilds/
+/[Bb]uild/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+
+# Rutas canónicas de Unity y builds
+/Library/
+/Temp/
+/obj/
+/Builds/
+/UserSettings/
+*.csproj
+*.sln
+
+# IDE and local tooling
+.vs/
+.vscode/
+*.csproj
+*.sln
+*.user
+*.userprefs
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Crash reports
+sysinfo.txt
