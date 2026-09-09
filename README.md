@@ -4,6 +4,13 @@
 
 **Repositorio:** https://github.com/d4ms36/TapMonProject
 
+## Ciclo de versiones
+
+- `main` contiene las versiones estables y preparadas para compartir o publicar.
+- `develop` contiene el trabajo activo y los cambios que todavía están en desarrollo.
+- Las versiones siguen [Semantic Versioning](https://semver.org/), con el formato `vMAJOR.MINOR.PATCH`.
+- Los cambios se desarrollan en `develop` y solo pasan a `main` cuando el PM lo autoriza.
+
 ## Estado actual
 
 - **Unity:** 2022.3.67f2 LTS.

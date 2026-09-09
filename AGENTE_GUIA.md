@@ -50,6 +50,14 @@
 5. Ejecutar una validación estática sin abrir Unity.
 6. Reportar al PM los archivos modificados, la validación y los pendientes manuales.
 
+## Flujo de ramas y versiones
+
+1. Trabajar en la rama `develop` para cambios activos.
+2. Mantener `main` como la rama de versiones estables.
+3. Solo fusionar cambios de `develop` a `main` cuando el PM lo autorice explícitamente.
+4. Usar versiones con Semantic Versioning y el formato `vMAJOR.MINOR.PATCH`.
+5. Crear los tags de versión en `main` después de verificar el estado estable correspondiente.
+
 ## Políticas y publicación
 
 - Mantener `Docs/PrivacyPolicy.md` y `Docs/TermsOfService.md` sincronizados con las funciones reales de la app.
