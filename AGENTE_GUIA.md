@@ -67,6 +67,14 @@
 - Probar consentimiento GDPR antes de inicializar anuncios personalizados.
 - El Rewarded entrega 500 monedas mediante `GameManager.OnRewardEarned()` solo después de `OnUserEarnedReward`.
 
+## Error de PlayServicesResolver
+
+- Si aparece `XmlException: Data at the root level is invalid`, validar todos los XML antes de cambiar código.
+- `Assets/Plugins/Android/AndroidManifest.xml` debe empezar con la declaración XML y no puede contener `using UnityEngine` ni otro código C#.
+- No borrar manifiestos válidos del SDK; comparar primero con `GoogleMobileAdsPlugin.androidlib/AndroidManifest.xml`.
+- Con Unity abierto por el desarrollador, revisar `Assets > External Dependency Manager > Android Resolver > Settings`, desactivar la resolución automática si está causando regeneraciones problemáticas y ejecutar `Force Resolve` manualmente.
+- No abrir Unity desde el agente; documentar el diagnóstico y pedir al desarrollador que ejecute Force Resolve.
+
 ## Generación de APK desde terminal
 
 - No abrir Unity manualmente ni generar APK desde el agente sin una instrucción explícita del PM.

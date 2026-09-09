@@ -1,9 +1,4 @@
-using UnityEngine;
-
-/// <summary>
-/// AndroidManifest para TapMon: Mi Compi Virtual.
-/// Permisos necesarios para AdMob y funcionalidad de red.
-/// </summary>
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tuempresa.tapmon"
     android:versionCode="1"

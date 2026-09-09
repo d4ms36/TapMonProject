@@ -59,6 +59,20 @@ La carga de interstitial y rewarded usa `InterstitialAd.Load(...)` y `RewardedAd
 
 Los IDs reales no deben usarse en pruebas que generen impresiones o clics artificiales. Los IDs `ca-app-pub-3940256099942544/...` del script son los IDs oficiales de prueba de Google.
 
+## Error conocido: PlayServicesResolver
+
+Si Unity muestra `Exception thrown when initializing PlayServicesResolver` junto con `XmlException: Data at the root level is invalid`, revisar primero los XML del proyecto. `Assets/Plugins/Android/AndroidManifest.xml` debe comenzar con `<?xml version="1.0" encoding="utf-8"?>`; no debe contener código C# ni caracteres antes de esa declaración.
+
+Solución aplicada: se eliminó el bloque C# corrupto del manifiesto y se restauró como XML válido. Los demás XML de `Assets/Plugins/Android/`, `Assets/GoogleMobileAds/` y `ProjectSettings/GvhProjectSettings.xml` fueron comprobados como válidos.
+
+Si el error reaparece después de instalar o actualizar el SDK:
+
+1. Hacer una copia de seguridad del proyecto.
+2. Abrir `Assets > External Dependency Manager > Android Resolver > Settings`.
+3. Desactivar la resolución automática (`Use Jetifier` y opciones de resolución automática solo si el plugin lo requiere; no cambiar opciones sin revisar el resultado).
+4. Ejecutar `Assets > External Dependency Manager > Android Resolver > Force Resolve` manualmente después de verificar el manifiesto.
+5. Revisar `Assets/Plugins/Android/` y el log de Unity si el resolver vuelve a modificar archivos.
+
 ## MP-2: APK con anuncios de prueba
 
 Objetivo: instalar el SDK de Google Mobile Ads, activar `AdManager` y generar una build Android que use exclusivamente anuncios de prueba.
