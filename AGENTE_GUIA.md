@@ -5,6 +5,7 @@
 - **Nombre:** TapMon: Mi Compi Virtual
 - **Motor:** Unity 2022.3.67f2 LTS
 - **Plataforma:** Android
+- **minSdkVersion requerido:** 24 (Android 7.0 Nougat)
 - **Monetización:** AdMob (Banner + anuncios recompensados)
 - **Almacenamiento:** PlayerPrefs local, sin servidores
 
@@ -84,6 +85,7 @@
 - Confirmar que `useTestAds = true` y que el SDK de AdMob está instalado antes de compilar.
 - No ejecutar la build con otra versión de Unity ni sustituir los IDs de prueba durante MP-2.
 - Si la build falla, revisar primero `build.log` y reportar el código de salida sin incluir carpetas generadas en Git.
+- Si aparece `uses-sdk:minSdkVersion 23 cannot be smaller than version 24`, configurar `Minimum API Level` en Android 7.0/API 24 y volver a ejecutar Force Resolve antes de compilar.
 - Si no existe `C:\Program Files\Unity\Hub\Editor\2022.3.67f2\Editor\Unity.exe` o el SDK de AdMob no está instalado, detenerse y reportarlo; no usar otra versión de Unity ni simular `Builds/TapMon_AdMob.apk`.
 
 ## MP-2: SDK y APK de prueba

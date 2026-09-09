@@ -17,6 +17,14 @@
 
 CP-3 está completado: el APK de prueba fue generado y probado manualmente en Android.
 
+## Requisitos mínimos de Android
+
+- **minSdkVersion:** `24` (Android 7.0 Nougat).
+- Configurar el mismo mínimo en `Player Settings > Android > Other Settings > Minimum API Level`.
+- Mantener `targetSdkVersion` según la versión objetivo exigida por Google Play.
+
+Si Gradle muestra `Manifest merger failed: uses-sdk:minSdkVersion 23 cannot be smaller than version 24`, cambiar el mínimo a Android 7.0/API 24 y volver a ejecutar la resolución del Android Resolver antes de generar el APK.
+
 ## Documentación para Google Play
 
 - Política de privacidad: `Docs/PrivacyPolicy.md`.
