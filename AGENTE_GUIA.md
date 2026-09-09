@@ -13,8 +13,8 @@
 - CP-1: [x] Completado
 - CP-2: [x] Completado
 - CP-3: [x] Completado (APK generado y probado)
-- MP-1: [~] Estructura de AdMob creada; falta instalar SDK, consentimiento y prueba de integración
-- MP-2: [ ] Pendiente
+- MP-1: [x] Estructura de AdMob creada
+- MP-2: [ ] Pendiente (instalación del SDK y APK de prueba)
 - MP-3: [ ] Pendiente (mejoras)
 - MP-4: [ ] Pendiente (misiones)
 - LP-1: [ ] Pendiente
@@ -64,3 +64,14 @@
 - Instalar el plugin oficial, definir `ADMOB_ENABLED` y configurar el App ID de Android en el SDK.
 - Probar consentimiento GDPR antes de inicializar anuncios personalizados.
 - El Rewarded entrega 500 monedas mediante `GameManager.OnRewardEarned()` solo después de `OnUserEarnedReward`.
+
+## MP-2: SDK y APK de prueba
+
+- Consultar `README.md` y `Docs/MP2_CHECKLIST.md` antes de cambiar la configuración del SDK.
+- Instalar el plugin oficial Google Mobile Ads Unity desde Package Manager; no inventar dependencias ni modificar `Packages/manifest.json` sin verificar el paquete.
+- Activar `ADMOB_ENABLED` únicamente después de instalar el SDK y confirmar que sus namespaces están disponibles.
+- Añadir `AdManager` a `Assets/Scenes/MainMenu.unity` como GameObject y asignar `Assets/Scripts/AdManager.cs`.
+- Mantener `useTestAds = true` durante todo MP-2, incluso en el APK instalado en el celular.
+- Probar banner, interstitial y rewarded con los IDs oficiales de prueba `ca-app-pub-3940256099942544/...`.
+- No cambiar a IDs reales, no generar clics artificiales y no marcar MP-2 como completado sin evidencia del dispositivo.
+- No abrir Unity ni generar APK desde el agente; esas acciones corresponden al desarrollador.

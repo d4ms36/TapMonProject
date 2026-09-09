@@ -57,6 +57,41 @@ Antes de publicar, sustituir los datos de contacto, confirmar la URL pública de
 
 Los IDs reales no deben usarse en pruebas que generen impresiones o clics artificiales. Los IDs `ca-app-pub-3940256099942544/...` del script son los IDs oficiales de prueba de Google.
 
+## MP-2: APK con anuncios de prueba
+
+Objetivo: instalar el SDK de Google Mobile Ads, activar `AdManager` y generar una build Android que use exclusivamente anuncios de prueba.
+
+### Preparación en Unity
+
+1. Abrir el proyecto con Unity 2022.3.67f2 LTS.
+2. Instalar el plugin Google Mobile Ads Unity desde Package Manager siguiendo la [guía oficial de Google](https://developers.google.com/admob/unity/quick-start).
+3. Resolver la instalación del External Dependency Manager si el plugin lo solicita y dejar que el SDK termine su configuración.
+4. En `Project Settings > Player > Scripting Define Symbols`, añadir `ADMOB_ENABLED` para Android.
+5. Abrir `Assets/Scenes/MainMenu.unity` y crear un GameObject vacío llamado `AdManager`.
+6. Asignar `Assets/Scripts/AdManager.cs` al GameObject `AdManager`.
+7. Confirmar que `useTestAds` permanece en `true`. No usar los IDs reales durante esta prueba.
+8. Configurar el App ID de prueba de Android en la configuración del plugin; los IDs de unidad de prueba ya están definidos en `AdManager.cs`.
+
+### Generación del APK
+
+1. Abrir `File > Build Settings` y seleccionar `Android`.
+2. Pulsar `Switch Platform` si es necesario.
+3. Añadir `Assets/Scenes/MainMenu.unity` a `Scenes In Build`.
+4. Verificar que `ADMOB_ENABLED` está activo para la plataforma Android.
+5. Generar un APK de prueba, por ejemplo `Builds/TapMon_MP2_Test.apk`.
+
+### Prueba en el celular
+
+Instalar el APK en un dispositivo Android con conexión a Internet y comprobar:
+
+- El banner aparece en la parte inferior sin bloquear la UI.
+- El interstitial se muestra al completar una misión o desde un botón de prueba; no debe mostrarse de forma abusiva.
+- El rewarded se puede abrir voluntariamente y entrega exactamente 500 monedas después de completarse.
+- Si un anuncio no está disponible, la aplicación continúa funcionando y permite reintentar.
+- La consola no muestra errores de App ID, SDK o carga de anuncios.
+
+El procedimiento detallado y el espacio para evidencias están en `Docs/MP2_CHECKLIST.md`.
+
 ## Checklist de publicación en Google Play
 
 - [x] Repositorio GitHub configurado y tag `v0.1.0-cp3` creado.
