@@ -1,5 +1,8 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 using TMPro;
 
 /// <summary>
@@ -13,6 +16,17 @@ public class GameManager : MonoBehaviour
     [Header("UI References")]
     [Tooltip("Texto TMP que muestra el contador de monedas.")]
     [SerializeField] private TMP_Text coinDisplay;
+
+    [Tooltip("Imagen del botón central que representa a la mascota.")]
+    [SerializeField] private Image tapButtonImage;
+
+    [Header("Mejoras disponibles")]
+    [SerializeField] private UpgradeSO mejoraDanio;
+    [SerializeField] private UpgradeSO mejoraAuto;
+    [SerializeField] private UpgradeSO mejoraMascota;
+
+    [Header("Misiones diarias")]
+    [SerializeField] private List<DailyMission> dailyMissions = new List<DailyMission>();
 
     [Header("Coin Settings")]
     [Tooltip("Cantidad de monedas otorgadas por toque base.")]
@@ -31,10 +45,12 @@ public class GameManager : MonoBehaviour
     [Tooltip("Evento invocado cuando se compra una mejora.")]
     public UnityEvent<UpgradeSO> OnUpgradePurchased;
 
+    public UnityEvent OnDailyMissionsChanged;
+
     private int _currentCoins;
     private float _autoClickTimer;
-    private int _autoClickAccumulated;
     private int _autoClickLevel;
+    private int _damageLevel;
 
     public int CurrentCoins
     {
@@ -58,7 +74,11 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         LoadProgress();
+        ResetDailyMissions();
+        ApplyLoadedUpgrades();
         UpdateCoinDisplay();
+        OnCoinsChanged?.Invoke(CurrentCoins);
+        OnDailyMissionsChanged?.Invoke();
     }
 
     private void Update()
@@ -78,10 +98,16 @@ public class GameManager : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(screenPosition);
         if (Physics2D.Raycast(ray.origin, ray.direction, Mathf.Infinity))
         {
-            AddCoins(GetCoinsPerTap());
-            TotalTaps++;
-            SaveProgress();
+            AddTapCoins();
         }
+    }
+
+    public void AddTapCoins()
+    {
+        AddCoins(GetCoinsPerTap());
+        TotalTaps++;
+        CheckMissionProgress(MissionType.Toques, 1);
+        SaveProgress();
     }
 
     public void AddCoins(int amount)
@@ -119,8 +145,18 @@ public class GameManager : MonoBehaviour
 
     public void OnRewardEarned()
     {
-        AddCoins(rewardCoins);
-        Debug.Log($"[GameManager] ¡Recompensa entregada! +{rewardCoins} monedas");
+        AddCoins(500);
+        Debug.Log("[GameManager] ¡Recompensa entregada! +500 monedas");
+
+        if (UITouchFeedback.Instance != null)
+        {
+            Vector2 screenCenter = new Vector2(Screen.width / 2f, Screen.height / 2f);
+            Vector2 coinDisplayPos = GameObject.Find("CoinDisplay") != null ? (Vector2)GameObject.Find("CoinDisplay").transform.position : screenCenter + new Vector2(0, 300);
+            UITouchFeedback.Instance.SpawnCoinBurst(screenCenter, coinDisplayPos, 20);
+            UITouchFeedback.Instance.PlayCashSound();
+            UITouchFeedback.Instance.TriggerVibration();
+            UITouchFeedback.Instance.SpawnFloatingText(screenCenter, "+500 🪙", new Color(1f, 0.843f, 0f, 1f));
+        }
     }
 
     public bool SpendCoins(int amount)
@@ -128,15 +164,22 @@ public class GameManager : MonoBehaviour
         if (amount <= 0 || CurrentCoins < amount) return false;
 
         CurrentCoins -= amount;
+        CheckMissionProgress(MissionType.Gastos, amount);
         UpdateCoinDisplay();
         OnCoinsChanged?.Invoke(CurrentCoins);
         SaveProgress();
         return true;
     }
 
-    private int GetCoinsPerTap()
+    public int GetCoinsPerTap()
     {
-        return Mathf.Max(1, baseCoinsPerTap);
+        return Mathf.Max(1, baseCoinsPerTap * (int)Mathf.Pow(2, _damageLevel));
+    }
+
+    public void SetTapButtonImage(Image image)
+    {
+        tapButtonImage = image;
+        ApplyLoadedUpgrades();
     }
 
     private void HandleAutoClick()
@@ -155,13 +198,14 @@ public class GameManager : MonoBehaviour
 
     public bool PurchaseUpgrade(UpgradeSO upgrade)
     {
-        if (upgrade == null || !upgrade.isUnlocked)
+        if (upgrade == null)
         {
-            Debug.LogWarning("[GameManager] La mejora no es válida o está bloqueada.");
+            Debug.LogWarning("[GameManager] La mejora no es válida.");
             return false;
         }
 
-        int currentCost = upgrade.GetCurrentCost();
+        int currentLevel = GetUpgradeLevel(upgrade);
+        int currentCost = upgrade.GetCostForLevel(currentLevel);
         if (!SpendCoins(currentCost))
         {
             Debug.LogWarning($"[GameManager] Monedas insuficientes. Necesitas {currentCost}.");
@@ -169,7 +213,8 @@ public class GameManager : MonoBehaviour
         }
 
         ApplyUpgradeEffect(upgrade);
-        upgrade.currentPurchaseCount++;
+        SetUpgradeLevel(upgrade, currentLevel + 1);
+        CheckMissionProgress(MissionType.Mejoras, 1);
         OnUpgradePurchased?.Invoke(upgrade);
         SaveProgress();
         return true;
@@ -177,8 +222,132 @@ public class GameManager : MonoBehaviour
 
     private void ApplyUpgradeEffect(UpgradeSO upgrade)
     {
-        if (upgrade.effectValue == 1) baseCoinsPerTap++;
-        if (upgrade.effectValue == 2) _autoClickLevel++;
+        switch (upgrade.efecto)
+        {
+            case UpgradeSO.UpgradeEffect.Danio:
+                _damageLevel++;
+                break;
+            case UpgradeSO.UpgradeEffect.AutoClicker:
+                _autoClickLevel++;
+                break;
+            case UpgradeSO.UpgradeEffect.Mascota:
+                if (tapButtonImage != null && upgrade.icono != null)
+                    tapButtonImage.sprite = upgrade.icono;
+                break;
+        }
+    }
+
+    public int GetUpgradeLevel(UpgradeSO upgrade)
+    {
+        if (upgrade == null) return 0;
+        return PlayerPrefs.GetInt(GetUpgradeKey(upgrade), 0);
+    }
+
+    public int GetUpgradeCost(UpgradeSO upgrade)
+    {
+        return upgrade == null ? 0 : upgrade.GetCostForLevel(GetUpgradeLevel(upgrade));
+    }
+
+    private void SetUpgradeLevel(UpgradeSO upgrade, int level)
+    {
+        PlayerPrefs.SetInt(GetUpgradeKey(upgrade), Mathf.Max(0, level));
+    }
+
+    private string GetUpgradeKey(UpgradeSO upgrade)
+    {
+        return $"TapMon_Upgrade_{upgrade.name}";
+    }
+
+    private void ApplyLoadedUpgrades()
+    {
+        _damageLevel = GetUpgradeLevel(mejoraDanio);
+        _autoClickLevel = GetUpgradeLevel(mejoraAuto);
+
+        if (tapButtonImage != null && mejoraMascota != null && GetUpgradeLevel(mejoraMascota) > 0)
+            tapButtonImage.sprite = mejoraMascota.icono;
+    }
+
+    public void CheckMissionProgress(MissionType type, int amount)
+    {
+        if (amount <= 0) return;
+
+        bool changed = false;
+        for (int index = 0; index < dailyMissions.Count; index++)
+        {
+            DailyMission mission = dailyMissions[index];
+            if (mission == null || mission.missionType != type || IsMissionClaimed(mission)) continue;
+
+            int progress = GetMissionProgress(mission);
+            int updatedProgress = Mathf.Min(mission.target, progress + amount);
+            if (updatedProgress == progress) continue;
+
+            PlayerPrefs.SetInt(GetMissionProgressKey(mission), updatedProgress);
+            changed = true;
+        }
+
+        if (changed)
+        {
+            PlayerPrefs.Save();
+            OnDailyMissionsChanged?.Invoke();
+        }
+    }
+
+    public int GetMissionProgress(DailyMission mission)
+    {
+        return mission == null ? 0 : PlayerPrefs.GetInt(GetMissionProgressKey(mission), 0);
+    }
+
+    public bool IsMissionClaimed(DailyMission mission)
+    {
+        return mission != null && PlayerPrefs.GetInt(GetMissionClaimedKey(mission), 0) == 1;
+    }
+
+    public bool CanClaimMission(DailyMission mission)
+    {
+        return mission != null && !IsMissionClaimed(mission) && GetMissionProgress(mission) >= mission.target;
+    }
+
+    public bool ClaimMission(DailyMission mission)
+    {
+        if (!CanClaimMission(mission)) return false;
+
+        PlayerPrefs.SetInt(GetMissionClaimedKey(mission), 1);
+        PlayerPrefs.Save();
+        AddCoins(mission.reward);
+        OnDailyMissionsChanged?.Invoke();
+        return true;
+    }
+
+    public void ResetDailyMissions()
+    {
+        long lastResetTicks = (long)(uint)PlayerPrefs.GetInt("TapMon_DailyMissionResetTicksHigh", 0) << 32;
+        lastResetTicks |= (uint)PlayerPrefs.GetInt("TapMon_DailyMissionResetTicksLow", 0);
+        long nowTicks = DateTime.UtcNow.Ticks;
+
+        if (lastResetTicks > 0 && nowTicks - lastResetTicks < TimeSpan.FromHours(24).Ticks) return;
+
+        for (int index = 0; index < dailyMissions.Count; index++)
+        {
+            DailyMission mission = dailyMissions[index];
+            if (mission == null) continue;
+            PlayerPrefs.SetInt(GetMissionProgressKey(mission), 0);
+            PlayerPrefs.SetInt(GetMissionClaimedKey(mission), 0);
+        }
+
+        PlayerPrefs.SetInt("TapMon_DailyMissionResetTicksHigh", (int)(nowTicks >> 32));
+        PlayerPrefs.SetInt("TapMon_DailyMissionResetTicksLow", (int)nowTicks);
+        PlayerPrefs.Save();
+        OnDailyMissionsChanged?.Invoke();
+    }
+
+    private string GetMissionProgressKey(DailyMission mission)
+    {
+        return $"TapMon_DailyMission_{mission.name}_Progress";
+    }
+
+    private string GetMissionClaimedKey(DailyMission mission)
+    {
+        return $"TapMon_DailyMission_{mission.name}_Claimed";
     }
 
     public void UpdateCoinDisplay()

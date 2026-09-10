@@ -7,57 +7,28 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "NewUpgrade", menuName = "TapMon/UpgradeSO")]
 public class UpgradeSO : ScriptableObject
 {
+    public enum UpgradeEffect
+    {
+        Danio,
+        AutoClicker,
+        Mascota
+    }
+
     [Header("Identificación")]
-    [Tooltip("Nombre de la mejora.")]
-    public string upgradeName = "Nueva Mejora";
-
-    [Tooltip("Descripción del efecto de la mejora.")]
+    public string nombre = "Nueva Mejora";
     [TextArea]
-    public string description = "Descripción de la mejora.";
+    public string descripcion = "Descripción de la mejora.";
 
-    [Header("Configuración de Costo")]
-    [Tooltip("Costo base en monedas para la primera compra.")]
-    public int baseCost = 100;
+    [Header("Configuración de coste")]
+    [Min(1)] public int costeBase = 100;
+    [Min(1f)] public float multiplicadorCoste = 1.5f;
 
-    [Tooltip("Multiplicador de costo por nivel. 1 = fijo, 2 = se duplica, 1.5 = aumenta un 50%.")]
-    [Min(1f)] public float costMultiplier = 1f;
+    public UpgradeEffect efecto = UpgradeEffect.Danio;
+    public Sprite icono;
 
-    [Header("Configuración de Efecto")]
-    [Tooltip("Valor del efecto: 1 = Aumenta monedas por toque, 2 = Auto-clicker, 3 = Evolución visual.")]
-    public int effectValue = 1;
-
-    [Tooltip("Icono de la mejora para mostrar en el menú de tienda.")]
-    public Sprite icon;
-
-    [Header("Estado")]
-    [Tooltip("Número de veces que se ha comprado esta mejora.")]
-    public int currentPurchaseCount = 0;
-
-    [Tooltip("¿Está desbloqueada esta mejora?")]
-    public bool isUnlocked = true;
-
-    /// <summary>
-    /// Obtiene el costo actualizado de la mejora según las compras previas.
-    /// </summary>
-    public int GetCurrentCost()
+    public int GetCostForLevel(int level)
     {
-        float cost = baseCost * Mathf.Pow(costMultiplier, currentPurchaseCount);
+        float cost = costeBase * Mathf.Pow(multiplicadorCoste, Mathf.Max(0, level));
         return Mathf.Max(1, Mathf.CeilToInt(cost));
-    }
-
-    /// <summary>
-    /// Obtiene el nivel actual de la mejora.
-    /// </summary>
-    public int GetCurrentLevel()
-    {
-        return currentPurchaseCount + 1;
-    }
-
-    /// <summary>
-    /// Obtiene el multiplicador de efecto actual.
-    /// </summary>
-    public float GetEffectMultiplier()
-    {
-        return 1f + (currentPurchaseCount * 0.1f); // +10% por nivel
     }
 }

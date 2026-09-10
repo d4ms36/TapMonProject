@@ -21,6 +21,58 @@
 - **Interacción:** `TapButton` ejecuta `GameManager.AddCoins(1)` y `GameManager.coinDisplay` apunta a `CoinDisplay`.
 - **Errores conocidos:** Ninguno; la escena está configurada para compilar sin errores.
 
+## Sistema de mejoras
+
+MP-3 incluye tres mejoras configuradas como `ScriptableObject` en `Assets/ScriptableObjects/`:
+
+- **Daño:** cada nivel multiplica por dos las monedas obtenidas por toque.
+- **Auto-clicker:** cada nivel genera una moneda por segundo.
+- **Mascota:** al comprarla, cambia el sprite del botón central usando su campo `icono`.
+
+La tienda se crea en `MainMenu` con tres botones que muestran nombre, nivel y coste actual. Los niveles se guardan en `PlayerPrefs` usando una clave derivada del asset, y los costes aumentan según `multiplicadorCoste`. Las compras solo se realizan mediante `GameManager.PurchaseUpgrade(UpgradeSO)`.
+
+La tienda también incluye el botón `Ver anuncio +500🪙`. El botón llama a `AdManager.ShowRewardedAd()` y la recompensa se entrega una sola vez al completar el anuncio mediante `GameManager.OnRewardEarned()`, que ejecuta `AddCoins(500)`.
+
+## Misiones diarias
+
+MP-4 incluye tres misiones configuradas como `DailyMission` en `Assets/ScriptableObjects/`:
+
+- **Toques:** completar 100 toques para recibir 200 monedas.
+- **Gastos:** gastar 100 monedas en mejoras para recibir 250 monedas.
+- **Mejoras:** comprar 3 mejoras para recibir 300 monedas.
+
+El progreso, el estado de reclamación y la fecha del último reinicio se guardan en `PlayerPrefs`. Las misiones se reinician automáticamente al transcurrir 24 horas desde el último reinicio. `DailyMissionUI` muestra los tres paneles, actualiza el progreso en tiempo real y habilita `Reclamar` solo cuando la misión está completa.
+
+## UI/UX Rediseño Estilo "Modern Fantasy Game UI Kit"
+
+`MainMenu.unity` utiliza una interfaz mística de alta calidad basada en la referencia visual **Modern Fantasy Game UI Kit** (`TapMonMainMenuUI`, `UITouchFeedback`, `UIButtonAnimator`, `DailyMissionUI` y `UpgradeStoreUI`), configurada con Auto-Sizing responsivo (`enableAutoSizing`):
+
+1. **Tipografía Responsiva Proporcional (`enableAutoSizing`)**:
+   - **Contador de Monedas**: Rangos dinámicos `24 - 44pt` en oro místico `#FFAA00` con pulso animado.
+   - **Título Nivel Evolución**: Rangos dinámicos `22 - 32pt` en cian místico `#00E5FF` con sombra.
+   - **Títulos de Tarjetas**: Rangos dinámicos `14 - 22pt` en blanco puro `#FFFFFF`.
+   - **Descripciones**: Rangos dinámicos `11 - 16pt` en plata mística `#A0B2C6`.
+   - **Insignias y Porcentajes**: Rangos dinámicos `12 - 18pt` sobre gemas cian.
+   - **Botones y Pestañas**: Rangos dinámicos `14 - 22pt` centrados.
+
+2. **Re-espaciado y Expansión de Layout**:
+   - **Paneles Dinámicos**: Expandidos a un **21% de la altura total de pantalla** (`0.13f` a `0.34f`), eliminando cualquier hacinamiento.
+   - **Margen de Seguridad**: Separación garantizada del **4%** entre la barra de evolución y los paneles.
+
+3. **Paleta de Colores Épica de Fantasía**:
+   - **Fondo principal**: `#0E161B` (Pizarra / Ébano Oscuro Místico).
+   - **Fondo tarjetas**: `#1C2B36` (Pizarra Metálica Oscura).
+   - **Acento místico / Gemas**: `#00E5FF` (Cian Mágico fosforescente).
+   - **Marcos y biseles**: `#D4AF37` (Bronce Místico / Oro).
+   - **Acento acción / Pestañas**: `#FF7B00` (Ámbar Fuego).
+   - **Acento recompensa**: `#FFAA00` (Dorado Recompensa).
+   - **Texto principal**: `#FFFFFF` | **Texto secundario**: `#A0B2C6` (Plata Mística).
+
+4. **Efectos Místicos y Micro-Animaciones**:
+   - **Feedback Táctil**: Partículas resplandecientes de cian místico `#00E5FF` y oro `#FFAA00` (22-36px).
+   - **Hover & Press**: Elevación al posar (`1.02`) y compresión táctil (`0.98`) vía `UIButtonAnimator`.
+   - **Transición de Pestañas**: Fade + Slide (`0.3s`) entre Misiones y Tienda.
+
 ## Estado CP-3
 
 CP-3 está completado: el APK de prueba fue generado y probado manualmente en Android.

@@ -58,6 +58,52 @@
 4. Usar versiones con Semantic Versioning y el formato `vMAJOR.MINOR.PATCH`.
 5. Crear los tags de versión en `main` después de verificar el estado estable correspondiente.
 
+## Sistema de mejoras MP-3
+
+- Crear o editar mejoras en `Assets/ScriptableObjects/` usando `UpgradeSO`.
+- Mantener exactamente un asset para cada efecto base: `Danio`, `AutoClicker` y `Mascota`.
+- Usar `GameManager.PurchaseUpgrade(UpgradeSO)` para comprar; no modificar directamente los niveles del asset.
+- Consultar niveles y precios con `GetUpgradeLevel` y `GetUpgradeCost`; ambos proceden de `PlayerPrefs`.
+- Mantener el `icono` de la mejora `Mascota` asignado a un Sprite válido para cambiar el botón central.
+- No cambiar las claves de `PlayerPrefs` ni renombrar los assets publicados sin migración de datos.
+- La tienda se configura en `MainMenu.unity` mediante `UpgradeStoreUI`; comprobar que contiene tres referencias en `mejoras`.
+- Después de cada cambio, validar C# y el YAML de la escena sin abrir Unity; el desarrollador debe hacer la prueba visual y de dispositivo.
+- Mantener el botón `Ver anuncio +500🪙` al final de `UpgradeStoreUI`; debe llamar a `AdManager.ShowRewardedAd()`.
+- La recompensa debe entregarse únicamente desde `GameManager.OnRewardEarned()` después de `OnUserEarnedReward`, usando `AddCoins(500)`.
+- No entregar la recompensa desde el callback de disponibilidad del botón ni desde un segundo evento de cierre del anuncio.
+
+## Misiones diarias MP-4
+
+- Definir las misiones en `Assets/ScriptableObjects/` usando `DailyMission`.
+- Mantener tres referencias en `GameManager.dailyMissions` y en `DailyMissionUI.missions`.
+- Usar `MissionType.Toques`, `MissionType.Gastos` y `MissionType.Mejoras`; el progreso se incrementa desde `AddTapCoins`, `SpendCoins` y `PurchaseUpgrade`.
+- Consultar o reclamar mediante `GetMissionProgress`, `CanClaimMission` y `ClaimMission`; no modificar directamente los valores de `PlayerPrefs`.
+- No cambiar los nombres de los assets de misión publicados sin migrar las claves `TapMon_DailyMission_*`.
+- El reinicio se basa en UTC y ocurre automáticamente después de 24 horas; conservar las claves de ticks alto y bajo.
+- La UI debe dejar `Reclamar` desactivado hasta completar el objetivo y mostrar `Reclamada` después de cobrar.
+- Validar C# y el YAML de `MainMenu.unity` sin abrir Unity; la prueba visual y del ciclo de 24 horas corresponde al desarrollador.
+
+## UI de MainMenu y Sistema Visual "Modern Fantasy Game UI Kit"
+
+- Mantener `TapMonMainMenuUI` como compositor principal de la interfaz en `MainMenu.unity`.
+- **Estilo de Fantasía Mística**: Inspirado en la referencia visual *Modern Fantasy Game UI Kit*.
+- **Auto-Sizing de Fuentes Obligatorio (`enableAutoSizing = true`)**:
+  - `CoinDisplay`: `fontSizeMin = 24`, `fontSizeMax = 44`.
+  - `EvolutionLabel`: `fontSizeMin = 22`, `fontSizeMax = 32`.
+  - Títulos de tarjetas: `fontSizeMin = 14`, `fontSizeMax = 22`.
+  - Descripciones: `fontSizeMin = 11`, `fontSizeMax = 16`.
+  - Botones y pestañas: `fontSizeMin = 14`, `fontSizeMax = 22`.
+  - Insignias / porcentajes: `fontSizeMin = 12`, `fontSizeMax = 18`.
+- **Layout y Margen de Seguridad**:
+  - Los paneles dinámicos ocupan un **21% de la altura total de pantalla** (`anchorMin.y = 0.13f`, `anchorMax.y = 0.34f`).
+  - Margen garantizado del **4%** entre la barra de evolución y el borde superior del panel.
+- **Profundidad Visual y Biseles 3D**: Marcos metálicos bronce `#D4AF37`, sombras profundas `Shadow` (`rgba(0,0,0,0.55)`, distancia `0, -7`) e iluminación superior en botones.
+- **Feedback Táctil Místico**: `UITouchFeedback` gestiona las partículas resplandecientes de cian místico `#00E5FF` y oro `#FFAA00` (22-36px), textos flotantes con sombra y resplandor, ráfagas de monedas místicas y vibración/sonido.
+- **Micro-Animaciones**: `UIButtonAnimator` para hover (`1.02`) y press (`0.98`) con respuesta elástica. La mascota ejecuta animación continua de respiración idle.
+- **Paleta Refinada**: `#0E161B` (Pizarra ébano), `#1C2B36` (Pizarra metálica), `#FF7B00` (Ámbar fuego), `#00E5FF` (Cian mágico), `#D4AF37` (Bronce/Oro místico), `#FFFFFF` (Texto principal) y `#A0B2C6` (Plata mística).
+- No conectar el botón de mascota directamente a `AddCoins(1)`; debe llamar a `GameManager.AddTapCoins()` para respetar mejoras y misiones.
+- Validar diagnósticos C# y referencias sin abrir Unity; la prueba visual y en dispositivo se coordina con el desarrollador.
+
 ## Políticas y publicación
 
 - Mantener `Docs/PrivacyPolicy.md` y `Docs/TermsOfService.md` sincronizados con las funciones reales de la app.
